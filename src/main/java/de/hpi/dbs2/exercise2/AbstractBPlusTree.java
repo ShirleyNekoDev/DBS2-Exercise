@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -19,13 +19,12 @@ public abstract class AbstractBPlusTree implements Index<Integer, ValueReference
     protected BPlusTreeNode<?> rootNode;
 
     /**
-     * An empty B+-Tree starts with a root node, which is a specialized LeafNode.
-     * The InitialRootNode will be replaced with a InnerNode
-     * once there are enough entries in the tree.
+     * An empty B+-Tree starts with a LeafNode as an initial root node.
+     * This LeafNode will be replaced with an InnerNode once there are enough entries in the tree.
      */
     public AbstractBPlusTree(int order) {
         this.order = order;
-        rootNode = new InitialRootNode(order);
+        rootNode = new LeafNode(order);
     }
 
     /**
@@ -34,7 +33,7 @@ public abstract class AbstractBPlusTree implements Index<Integer, ValueReference
     public AbstractBPlusTree(BPlusTreeNode<?> rootNode) {
         this.rootNode = rootNode;
         this.order = rootNode.order;
-        Preconditions.checkState(isValid());
+        checkValidity();
     }
 
     public int getHeight() {
@@ -95,10 +94,20 @@ public abstract class AbstractBPlusTree implements Index<Integer, ValueReference
      */
     @NotNull
     @Override
-    public Iterator<ValueReference> getRange(@NotNull Integer lowerBound, @NotNull Integer upperBound) {
-        throw new UnsupportedOperationException("You don't have to implement this :)");
+    public Stream<ValueReference> getRange(@NotNull Integer lowerBound, @NotNull Integer upperBound) {
+        if(lowerBound > upperBound)
+            return Stream.empty();
+        return Stream
+            .iterate(
+                rootNode.findLeaf(lowerBound),
+                Objects::nonNull,
+                leaf -> leaf.nextSibling
+            )
+            .flatMap(LeafNode::getEntries)
+            .dropWhile(entry -> entry.getKey() < lowerBound)
+            .takeWhile(entry -> entry.getKey() <= upperBound)
+            .map(Entry::getValue);
     }
-
 
     /**
      * Insert a new key-value mapping into the index, replacing the old value for existing keys.
@@ -123,10 +132,11 @@ public abstract class AbstractBPlusTree implements Index<Integer, ValueReference
 
     /**
      * For testing purposes.
-     * @return if the tree structure is valid
+     * @throws IllegalStateException if tree is not valid
      */
-    public boolean isValid() {
-        return rootNode.isValid() && rootNode.order == order;
+    public void checkValidity() {
+        Preconditions.checkState(rootNode.order == order, "Tree root order mismatch");
+        rootNode.checkValidity(true);
     }
 
     @Override

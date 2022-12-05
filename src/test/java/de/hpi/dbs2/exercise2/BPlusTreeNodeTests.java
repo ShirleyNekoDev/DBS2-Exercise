@@ -3,6 +3,8 @@ package de.hpi.dbs2.exercise2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
+
 public class BPlusTreeNodeTests {
     @Test
     public void testTreeBuilder() {
@@ -19,7 +21,7 @@ public class BPlusTreeNodeTests {
                 }
             }
         );
-        Assertions.assertTrue(builtTree.isValid());
+        builtTree.checkValidity(true);
         InnerNode expectedTree = new InnerNode(4,
             new LeafNode(4,
                 new AbstractBPlusTree.Entry(2, new ValueReference(0)),
@@ -32,13 +34,13 @@ public class BPlusTreeNodeTests {
             )
         );
         expectedTree.fixLeafLinks();
-        Assertions.assertTrue(expectedTree.isValid());
+        expectedTree.checkValidity(true);
         Assertions.assertEquals(expectedTree, builtTree);
     }
 
     @Test
     public void testExampleTreeIsValid() {
-        Assertions.assertTrue(TestFixtures.exampleRoot.isValid());
+        TestFixtures.exampleRoot.checkValidity(true);
     }
 
     @Test
@@ -51,22 +53,22 @@ public class BPlusTreeNodeTests {
     @Test
     public void testNodeSize() {
         LeafNode leafNode0 = new LeafNode(4);
-        Assertions.assertFalse(leafNode0.isValid());
+        Assertions.assertThrows(IllegalStateException.class, () -> leafNode0.checkValidity(false));
         LeafNode leafNode1 = new LeafNode(4,
             TestFixtures.getOrCreateEntry(0)
         );
-        Assertions.assertFalse(leafNode1.isValid());
+        Assertions.assertThrows(IllegalStateException.class, () -> leafNode1.checkValidity(false));
         LeafNode leafNode2 = new LeafNode(4,
             TestFixtures.getOrCreateEntry(0),
             TestFixtures.getOrCreateEntry(1)
         );
-        Assertions.assertTrue(leafNode2.isValid());
+        leafNode2.checkValidity(false);
         LeafNode leafNode3 = new LeafNode(4,
             TestFixtures.getOrCreateEntry(0),
             TestFixtures.getOrCreateEntry(1),
             TestFixtures.getOrCreateEntry(2)
         );
-        Assertions.assertTrue(leafNode3.isValid());
+        leafNode3.checkValidity(false);
         Assertions.assertThrowsExactly(IllegalArgumentException.class,
             // leaves can only have order-1 references
             () -> new LeafNode(4,
@@ -82,18 +84,18 @@ public class BPlusTreeNodeTests {
         Assertions.assertEquals(2, leafNode2.getNodeSize());
 
         InnerNode innerNode0 = new InnerNode(4);
-        Assertions.assertFalse(innerNode0.isValid());
+        Assertions.assertThrows(IllegalStateException.class, () -> innerNode0.checkValidity(false));
         InnerNode innerNode1 = new InnerNode(4,
             TestFixtures.leaves[0]
         );
-        Assertions.assertFalse(innerNode1.isValid());
+        Assertions.assertThrows(IllegalStateException.class, () -> innerNode1.checkValidity(false));
         InnerNode innerNode4 = new InnerNode(4,
             TestFixtures.leaves[0],
             TestFixtures.leaves[1],
             TestFixtures.leaves[2],
             TestFixtures.leaves[3]
         );
-        Assertions.assertTrue(innerNode4.isValid());
+        innerNode4.checkValidity(false);
 
         Assertions.assertEquals(0, innerNode0.getNodeSize());
         Assertions.assertEquals(1, innerNode1.getNodeSize());
@@ -104,6 +106,30 @@ public class BPlusTreeNodeTests {
 
         Assertions.assertTrue(leafNode3.isFull());
         Assertions.assertTrue(innerNode4.isFull());
+    }
+
+    @Test
+    public void testGetSmallestKey() {
+        LeafNode leafNode0 = new LeafNode(4);
+        Assertions.assertThrows(NoSuchElementException.class, leafNode0::getSmallestKey);
+        InnerNode innerNode0 = new InnerNode(4);
+        Assertions.assertThrows(NoSuchElementException.class, innerNode0::getSmallestKey);
+
+        LeafNode leafNode3 = TestFixtures.leaves[0];
+        Assertions.assertEquals(2, leafNode3.getSmallestKey());
+        Assertions.assertEquals(2, TestFixtures.exampleRoot.getSmallestKey());
+    }
+
+    @Test
+    public void testGetLargestKey() {
+        LeafNode leafNode0 = new LeafNode(4);
+        Assertions.assertThrows(NoSuchElementException.class, leafNode0::getLargestKey);
+        InnerNode innerNode0 = new InnerNode(4);
+        Assertions.assertThrows(NoSuchElementException.class, innerNode0::getLargestKey);
+
+        LeafNode leafNode3 = TestFixtures.leaves[0];
+        Assertions.assertEquals(5, leafNode3.getLargestKey());
+        Assertions.assertEquals(47, TestFixtures.exampleRoot.getLargestKey());
     }
 
     @Test

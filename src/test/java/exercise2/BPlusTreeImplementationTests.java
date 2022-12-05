@@ -39,7 +39,7 @@ public class BPlusTreeImplementationTests {
             );
             expectedEntries.add(entry);
             tree.insert(entry);
-            Assertions.assertTrue(tree.isValid());
+            tree.checkValidity();
         }
         expectedEntries.sort(Comparator.comparingInt(
             AbstractBPlusTree.Entry::getKey
@@ -73,25 +73,25 @@ public class BPlusTreeImplementationTests {
         AbstractBPlusTree tree = getImplementation(4);
 
         tree.insert(2, new ValueReference(1));
-        Assertions.assertTrue(tree.isValid());
+        tree.checkValidity();
 
         tree.insert(7, new ValueReference(2));
-        Assertions.assertTrue(tree.isValid());
+        tree.checkValidity();
 
         tree.insert(4, new ValueReference(3));
-        Assertions.assertTrue(tree.isValid());
+        tree.checkValidity();
 
         tree.insert(3, new ValueReference(4));
-        Assertions.assertTrue(tree.isValid());
+        tree.checkValidity();
 
         tree.insert(8, new ValueReference(5));
-        Assertions.assertTrue(tree.isValid());
+        tree.checkValidity();
 
         tree.insert(1, new ValueReference(6));
-        Assertions.assertTrue(tree.isValid());
+        tree.checkValidity();
 
         tree.insert(9, new ValueReference(7));
-        Assertions.assertTrue(tree.isValid());
+        tree.checkValidity();
 
         Assertions.assertEquals(expectedTree, tree);
     }
@@ -110,7 +110,7 @@ public class BPlusTreeImplementationTests {
             1, new ValueReference(2)
         );
         ValueReference returnValue2 = tree.insert(overwriteEntry1);
-        Assertions.assertTrue(tree.isValid());
+        tree.checkValidity();
         Assertions.assertEquals(new ValueReference(1), returnValue2);
 
         List<AbstractBPlusTree.Entry> entries1 = tree.getEntries().toList();
@@ -128,7 +128,7 @@ public class BPlusTreeImplementationTests {
             2, new ValueReference(4)
         );
         ValueReference returnValue4 = tree.insert(overwriteEntry2);
-        Assertions.assertTrue(tree.isValid());
+        tree.checkValidity();
         Assertions.assertEquals(new ValueReference(3), returnValue4);
 
         List<AbstractBPlusTree.Entry> entries2 = tree.getEntries().toList();

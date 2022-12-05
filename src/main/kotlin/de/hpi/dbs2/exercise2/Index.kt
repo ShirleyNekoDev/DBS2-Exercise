@@ -1,5 +1,7 @@
 package de.hpi.dbs2.exercise2
 
+import java.util.stream.Stream
+
 /**
  * This interface represents a simple abstraction for a database index.
  * It acts somewhat similar to a SortedMap by mapping comparable keys (which define the ordering)
@@ -25,7 +27,7 @@ interface Index<K : Comparable<K>, V : Any> {
      *         will be empty if lowerBound > upperBound
      *         will contain only a single value if lowerBound = upperBound and the key maps to a value
      */
-    fun getRange(lowerBound: K, upperBound: K): Iterator<V>
+    fun getRange(lowerBound: K, upperBound: K): Stream<V>
 
     /**
      * Insert a new key-value mapping into the index, replacing the old value for existing keys.

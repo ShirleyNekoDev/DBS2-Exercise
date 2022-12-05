@@ -5,8 +5,9 @@ import java.util.Map;
 
 public class TestFixtures {
     public final static Map<Integer, AbstractBPlusTree.Entry> entries = new HashMap<>();
+
     public final static AbstractBPlusTree.Entry getOrCreateEntry(int key) {
-        if(entries.containsKey(key)) {
+        if (entries.containsKey(key)) {
             return entries.get(key);
         } else {
             AbstractBPlusTree.Entry entry = new AbstractBPlusTree.Entry(
@@ -16,7 +17,8 @@ public class TestFixtures {
             return entry;
         }
     }
-    public final static LeafNode[] leaves = new LeafNode[] {
+
+    public final static LeafNode[] leaves = new LeafNode[]{
         new LeafNode(4, // leaves[0]
             getOrCreateEntry(2),
             getOrCreateEntry(3),
@@ -57,8 +59,10 @@ public class TestFixtures {
             leaves[5]
         )
     );
+
     static {
         ((InnerNode) exampleRoot).fixLeafLinks();
     }
+
     public final static AbstractBPlusTree exampleTree = new ReadOnlyBPlusTree(exampleRoot);
 }
