@@ -29,3 +29,5 @@ Relevant files / classes:
   - Also check out the JavaDocs (`gradle dokkaJavadoc` -> `build\dokka\javadoc\index.html`)
   - We have changed the structure and some methods of the DBMS framework. Please comment out any code from exercise 1 which does not compile anymore.
 - Download the example relations from moodle and put them in `src/test/resources/exercise3/`
+- Java provides the `hashCode()` method to get a good hash for every `Object`.
+  - Be careful. It can be negative.
