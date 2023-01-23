@@ -24,7 +24,7 @@ public abstract class AbstractBPlusTree implements Index<Integer, ValueReference
      */
     public AbstractBPlusTree(int order) {
         this.order = order;
-        rootNode = new LeafNode(order);
+        rootNode = new InitialRootNode(order);
     }
 
     /**
