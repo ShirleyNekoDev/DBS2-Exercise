@@ -72,10 +72,20 @@ public sealed abstract class BPlusTreeNode<V> permits InnerNode, LeafNode {
     /**
      * Finds the smallest key in the leftmost LeafNode of this subtree.
      *
+     * @throws java.util.NoSuchElementException if node is empty
      * @return the smallest key in this subtree
      */
     @NotNull
     public abstract Integer getSmallestKey();
+
+    /**
+     * Finds the largest key in the rightmost LeafNode of this subtree.
+     *
+     * @throws java.util.NoSuchElementException if node is empty
+     * @return the largest key in this subtree
+     */
+    @NotNull
+    public abstract Integer getLargestKey();
 
     /**
      * Finds the LeafNode in which the given key could be located.
@@ -86,7 +96,11 @@ public sealed abstract class BPlusTreeNode<V> permits InnerNode, LeafNode {
     @Nullable
     public abstract ValueReference getOrNull(@NotNull Integer searchKey);
 
-    public abstract boolean isValid();
+    /**
+     * For testing purposes.
+     * @throws IllegalStateException if tree is not valid
+     */
+    abstract void checkValidity(boolean isRoot);
 
     /**
      * @return A stream of all nodes in this subtree depth-first

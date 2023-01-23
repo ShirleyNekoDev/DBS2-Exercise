@@ -2,10 +2,12 @@ package de.hpi.dbs2.exercise2;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import de.hpi.dbs2.exercise2.utils.StreamUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -17,7 +19,7 @@ public non-sealed class LeafNode extends BPlusTreeNode<ValueReference> {
         super(order);
         references = new ValueReference[order - 1];
         // we can't insert more entries than the given order-1
-        Preconditions.checkArgument(entries.length < order);
+        Preconditions.checkArgument(entries.length < order, "Leaf node size exceeded");
         for (int i = 0; i < entries.length; i++) {
             AbstractBPlusTree.Entry entry = entries[i];
             keys[i] = entry.getKey();
@@ -33,8 +35,17 @@ public non-sealed class LeafNode extends BPlusTreeNode<ValueReference> {
     @NotNull
     @Override
     public Integer getSmallestKey() {
-        // this keys requires to exist, because otherwise this LeafNode would be empty
+        if (isEmpty()) throw new NoSuchElementException();
         return keys[0];
+    }
+
+    @NotNull
+    @Override
+    public Integer getLargestKey() {
+        if (isEmpty()) throw new NoSuchElementException();
+        return StreamUtils.reverseStream(keys)
+            .dropWhile(Objects::isNull)
+            .findFirst().get();
     }
 
     @NotNull
@@ -45,8 +56,8 @@ public non-sealed class LeafNode extends BPlusTreeNode<ValueReference> {
 
     @Nullable
     public ValueReference getOrNull(@NotNull Integer searchKey) {
-        for(int i = 0; i < keys.length; i++) {
-            if(searchKey.equals(keys[i])) {
+        for (int i = 0; i < keys.length; i++) {
+            if (searchKey.equals(keys[i])) {
                 return references[i];
             }
         }
@@ -77,21 +88,33 @@ public non-sealed class LeafNode extends BPlusTreeNode<ValueReference> {
     }
 
     @Override
-    public boolean isValid() {
-        if (keys.length != n)
-            return false;
+    public void checkValidity(boolean isRoot) {
+        Preconditions.checkState(keys.length == n, "Leaf node has invalid keys size");
+        Preconditions.checkState(references.length == n, "Leaf node has invalid references size");
+
+        // check node size in bounds
         int size = getNodeSize();
-        if(isEmpty() || size < (int) Math.floor(order/2.0))
-            return false;
-        if(Arrays.stream(keys).filter(Objects::nonNull).count() != size)
-            return false;
-        for(int i = 0; i < n; i++) {
-            if(keys[i] == null) break;
-            if(references[i] == null)
-                return false;
+        if (!isRoot) {
+            Preconditions.checkState(!isEmpty(), "Leaf node is empty");
+            Preconditions.checkState(
+                size >= (int) Math.floor(order / 2.0),
+                "Leaf node is underfilled (size=%s)", size
+            );
         }
-        // we do not implement last reference pointing to next leaf node
-        return true;
+
+        // check that there are not any superfluous (leftover) keys
+        Preconditions.checkState(
+            Arrays.stream(keys).filter(Objects::nonNull).count() == size,
+            "Leaf node contains superfluous keys"
+        );
+
+        for (int i = 0; i < n && keys[i] != null; i++) {
+            // check that each key has a referenced value
+            Preconditions.checkState(
+                references[i] != null,
+                "Leaf node keys[%s] is missing a value", i
+            );
+        }
     }
 
     @Override
