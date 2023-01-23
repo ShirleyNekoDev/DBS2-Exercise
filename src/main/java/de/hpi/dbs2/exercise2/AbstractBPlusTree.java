@@ -71,7 +71,7 @@ public abstract class AbstractBPlusTree implements Index<Integer, ValueReference
 
     /**
      * Insert a new key-value mapping into the index, replacing the old value for existing keys.
-     * @return previously associated value for the given key, if existing
+     * @return previously associated value for the given key, if existing, otherwise null
      */
     @Nullable
     @Override
@@ -79,7 +79,7 @@ public abstract class AbstractBPlusTree implements Index<Integer, ValueReference
 
     /**
      * Remove a key-value mapping from the index.
-     * @return previously associated value for the given key, if existing
+     * @return previously associated value for the given key, if existing, otherwise null
      */
     @Override
     public ValueReference remove(@NotNull Integer key) {
@@ -111,7 +111,7 @@ public abstract class AbstractBPlusTree implements Index<Integer, ValueReference
 
     /**
      * Insert a new key-value mapping into the index, replacing the old value for existing keys.
-     * @return previously associated value for the given key, if existing
+     * @return previously associated value for the given key, if existing, otherwise null
      */
     public ValueReference insert(@NotNull Entry entry) {
         return insert(entry.getKey(), entry.getValue());

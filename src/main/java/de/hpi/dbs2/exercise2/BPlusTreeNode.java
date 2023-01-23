@@ -124,6 +124,9 @@ public sealed abstract class BPlusTreeNode<V> permits InnerNode, LeafNode {
 
     /**
      * Utility builder method for creating a tree structure from an array (of arrays)+ of entries.
+     * The resulting tree nodes will take the same shape as the given nested array of entries or
+     * throw an exception if this would violate tree validity.
+     * You are _NOT_ allowed to use this method in your exercise implementation.
      *
      * <p><pre>{@code
      * buildTree(4,

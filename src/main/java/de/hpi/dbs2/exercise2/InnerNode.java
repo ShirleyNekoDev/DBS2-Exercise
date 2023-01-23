@@ -30,7 +30,7 @@ public non-sealed class InnerNode extends BPlusTreeNode<BPlusTreeNode<?>> {
 
     /**
      * Fixes leaf references after manually creating InnerNodes.
-     * You are _NOT_ allowed to use this method in the exercise.
+     * You are _NOT_ allowed to use this method in your exercise implementation.
      */
     public void fixLeafLinks() {
         List<LeafNode> leafs = getDepthFirstNodeStream()
