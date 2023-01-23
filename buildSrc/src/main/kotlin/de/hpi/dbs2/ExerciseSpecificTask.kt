@@ -10,7 +10,7 @@ import org.gradle.work.DisableCachingByDefault
 @DisableCachingByDefault
 abstract class ExerciseSpecificTask : DefaultTask() {
     companion object {
-        val REGISTERED_EXERCISES = listOf(0, 1)
+        val REGISTERED_EXERCISES = listOf(0, 1, 2, 3)
     }
 
     @get:Input
