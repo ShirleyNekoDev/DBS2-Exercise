@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib"))
     dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.9.10")
 
     implementation("com.github.ajalt.clikt:clikt:4.2.1")
@@ -51,9 +51,8 @@ tasks {
     }
     withType<KotlinJvmCompile> {
         kotlinOptions {
-            apiVersion = "1.7"
-            languageVersion = "1.7"
-            freeCompilerArgs = listOf("-Xcontext-receivers")
+            apiVersion = "1.8"
+            languageVersion = "1.8"
         }
     }
 
