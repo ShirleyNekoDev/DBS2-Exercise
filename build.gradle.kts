@@ -5,11 +5,11 @@ import de.hpi.dbs2.grading.*
 import de.hpi.dbs2.grading.util.*
 
 plugins {
-    kotlin("jvm") version "1.7.22"
+    kotlin("jvm") version "1.9.20"
     id("java")
 
-    id("com.github.ben-manes.versions") version "0.44.0"
-    id("org.jetbrains.dokka") version "1.7.20"
+    id("com.github.ben-manes.versions") version "0.49.0"
+    id("org.jetbrains.dokka") version "1.9.10"
     idea
 }
 
@@ -22,16 +22,16 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.7.20")
+    dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.9.10")
 
-    implementation("com.github.ajalt.clikt:clikt:3.5.0")
+    implementation("com.github.ajalt.clikt:clikt:4.2.1")
 
-    implementation("org.apache.commons:commons-csv:1.9.0")
-    implementation("com.google.guava:guava:31.1-jre")
+    implementation("org.apache.commons:commons-csv:1.10.0")
+    implementation("com.google.guava:guava:32.1.3-jre")
 
     testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
-    testImplementation("io.kotest:kotest-assertions-core:5.5.4")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.1")
+    testImplementation("io.kotest:kotest-assertions-core:5.8.0")
 }
 
 kotlin {
